@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numerus &mdash; Stone Tablet Calculator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="hall">
+
+    <!-- torches -->
+    <div class="torch torch--left"><span class="flame"></span></div>
+    <div class="torch torch--right"><span class="flame"></span></div>
+
+    <div class="tablet">
+
+      <div class="tablet__crack tablet__crack--tl"></div>
+      <div class="tablet__crack tablet__crack--br"></div>
+
+      <header class="tablet__header">
+        <span class="rule"></span>
+        <h1>NVMERVS</h1>
+        <p class="subtitle">a reckoning tablet</p>
+        <span class="rule"></span>
+      </header>
+
+      <div class="groove">
+        <div class="groove__expression" id="expression">&nbsp;</div>
+        <div class="groove__result" id="result">0</div>
+      </div>
+
+      <div class="keys">
+        <button class="key key--rune" data-action="clear">DEL</button>
+        <button class="key key--rune" data-action="clear-all">AC</button>
+        <button class="key key--rune" data-action="percent">%</button>
+        <button class="key key--ember" data-action="operator" data-op="÷">÷</button>
+
+        <button class="key key--stone" data-num="7">VII</button>
+        <button class="key key--stone" data-num="8">VIII</button>
+        <button class="key key--stone" data-num="9">IX</button>
+        <button class="key key--ember" data-action="operator" data-op="×">×</button>
+
+        <button class="key key--stone" data-num="4">IV</button>
+        <button class="key key--stone" data-num="5">V</button>
+        <button class="key key--stone" data-num="6">VI</button>
+        <button class="key key--ember" data-action="operator" data-op="−">−</button>
+
+        <button class="key key--stone" data-num="1">I</button>
+        <button class="key key--stone" data-num="2">II</button>
+        <button class="key key--stone" data-num="3">III</button>
+        <button class="key key--ember" data-action="operator" data-op="+">+</button>
+
+        <button class="key key--stone key--zero" data-num="0">nulla</button>
+        <button class="key key--stone" data-action="decimal">·</button>
+        <button class="key key--gold" data-action="equals">=</button>
+      </div>
+
+      <p class="tablet__footer">carved digit shown beneath its numeral</p>
+    </div>
+  </div>
+
+<script>
+  const exprEl = document.getElementById('expression');
+  const resEl  = document.getElementById('result');
+
+  let current   = '0';   // number currently being typed
+  let previous  = null;  // number stored before an operator was pressed
+  let operator  = null;  // pending operator
+  let justEvaluated = false;
+
+  const opMap = { '÷': (a,b)=>a/b, '×': (a,b)=>a*b, '−': (a,b)=>a-b, '+': (a,b)=>a+b };
+
+  function refresh() {
+    resEl.textContent = current;
+    exprEl.textContent = previous !== null ? `${previous} ${operator}` : '\u00A0';
+  }
+
+  function inputDigit(d) {
+    if (justEvaluated) { current = '0'; justEvaluated = false; }
+    current = current === '0' ? d : current + d;
+    refresh();
+  }
+
+  function inputDecimal() {
+    if (justEvaluated) { current = '0'; justEvaluated = false; }
+    if (!current.includes('.')) current += '.';
+    refresh();
+  }
+
+  function chooseOperator(op) {
+    if (operator && !justEvaluated) evaluate();
+    previous = current;
+    operator = op;
+    justEvaluated = false;
+    current = '0';
+    refresh();
+  }
+
+  function evaluate() {
+    if (operator === null || previous === null) return;
+    const a = parseFloat(previous);
+    const b = parseFloat(current);
+    let out = opMap[operator](a, b);
+    if (!isFinite(out)) out = 'error';
+    else out = Math.round(out * 1e10) / 1e10;
+    current = String(out);
+    previous = null;
+    operator = null;
+    justEvaluated = true;
+    refresh();
+  }
+
+  function percent() {
+    current = String(parseFloat(current) / 100);
+    refresh();
+  }
+
+  function clearEntry() {
+    current = '0';
+    refresh();
+  }
+
+  function clearAll() {
+    current = '0'; previous = null; operator = null; justEvaluated = false;
+    refresh();
+  }
+
+  document.querySelectorAll('.key').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const num = btn.dataset.num;
+      const action = btn.dataset.action;
+
+      if (num !== undefined) inputDigit(num);
+      else if (action === 'decimal') inputDecimal();
+      else if (action === 'operator') chooseOperator(btn.dataset.op);
+      else if (action === 'equals') evaluate();
+      else if (action === 'percent') percent();
+      else if (action === 'clear') clearEntry();
+      else if (action === 'clear-all') clearAll();
+    });
+  });
+
+  refresh();
+</script>
+
+</body>
+</html>

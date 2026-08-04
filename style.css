@@ -1,0 +1,288 @@
+/* ============================================
+   NVMERVS — a reckoning tablet
+   Palette:
+   --basalt      #1B1712   deep cavern background
+   --stone       #4A4139   slab body
+   --stone-lt    #6E6151   slab highlight / carved key face
+   --parchment   #E8D9B2   inscription / display glow
+   --bronze      #B5834B   metal accents, rune keys
+   --ember       #D9722C   torch fire, operator keys
+   ============================================ */
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 20%, #2a221a 0%, #1b1712 60%, #100d0a 100%);
+  font-family: 'EB Garamond', serif;
+  overflow: hidden;
+}
+
+/* ---------- cavern / torch light ---------- */
+
+.hall {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+}
+
+.torch {
+  position: absolute;
+  top: 8%;
+  width: 10px;
+  height: 90px;
+  background: linear-gradient(#5b4127, #2c2013);
+  border-radius: 3px;
+  box-shadow: inset -2px 0 3px rgba(0,0,0,.5);
+}
+.torch--left  { left: -10px; }
+.torch--right { right: -10px; }
+
+.flame {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 34px;
+  background: radial-gradient(circle at 50% 70%, #fff2c4 0%, #f2a13a 35%, #d9722c 60%, transparent 75%);
+  border-radius: 50% 50% 45% 45%;
+  filter: blur(1px);
+  animation: flicker 1.6s ease-in-out infinite alternate;
+}
+.torch--right .flame { animation-delay: .4s; }
+
+@keyframes flicker {
+  0%   { transform: translateX(-50%) scale(1) skewX(0deg);   opacity: .9; }
+  50%  { transform: translateX(-52%) scale(1.06) skewX(-3deg); opacity: 1; }
+  100% { transform: translateX(-48%) scale(0.96) skewX(3deg);  opacity: .85; }
+}
+
+/* ---------- the stone tablet ---------- */
+
+.tablet {
+  position: relative;
+  width: 380px;
+  max-width: 92vw;
+  padding: 28px 26px 22px;
+  background:
+    repeating-linear-gradient(115deg, rgba(255,255,255,.02) 0 2px, transparent 2px 6px),
+    linear-gradient(160deg, #58493d 0%, #3f342b 45%, #342a22 100%);
+  border-radius: 14px 18px 16px 20px;
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.65),
+    0 2px 0 rgba(255,255,255,.05) inset,
+    0 -6px 14px rgba(0,0,0,.4) inset;
+  clip-path: polygon(
+    2% 4%, 18% 0%, 82% 1%, 98% 5%,
+    100% 22%, 99% 78%, 100% 95%,
+    83% 100%, 20% 99%, 1% 96%,
+    0% 80%, 1% 20%
+  );
+}
+
+.tablet__crack {
+  position: absolute;
+  background: rgba(0,0,0,.35);
+  filter: blur(.3px);
+}
+.tablet__crack--tl {
+  top: 10px; left: 14px;
+  width: 60px; height: 3px;
+  transform: rotate(28deg);
+  clip-path: polygon(0 40%, 60% 0, 65% 30%, 100% 60%, 40% 100%, 30% 55%);
+}
+.tablet__crack--br {
+  bottom: 16px; right: 22px;
+  width: 46px; height: 3px;
+  transform: rotate(-20deg);
+  clip-path: polygon(0 30%, 50% 0, 100% 45%, 55% 70%, 40% 100%, 20% 60%);
+}
+
+/* ---------- header ---------- */
+
+.tablet__header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.tablet__header h1 {
+  margin: 6px 0 2px;
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 1.9rem;
+  letter-spacing: 4px;
+  color: #f1e4c2;
+  text-shadow: 0 1px 0 rgba(255,255,255,.15), 0 3px 3px rgba(0,0,0,.6);
+}
+
+.subtitle {
+  margin: 0;
+  font-style: italic;
+  font-size: .8rem;
+  letter-spacing: 1px;
+  color: #c9b892;
+  opacity: .8;
+}
+
+.rule {
+  display: block;
+  width: 70%;
+  height: 1px;
+  margin: 8px auto;
+  background: linear-gradient(90deg, transparent, #b5834b, transparent);
+  opacity: .7;
+}
+
+/* ---------- display groove ---------- */
+
+.groove {
+  padding: 16px 18px 14px;
+  margin-bottom: 20px;
+  background: #100d0a;
+  border-radius: 10px;
+  box-shadow:
+    inset 0 4px 10px rgba(0,0,0,.85),
+    inset 0 -2px 0 rgba(255,255,255,.04);
+  text-align: right;
+}
+
+.groove__expression {
+  min-height: 18px;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: .95rem;
+  color: #8a7a5c;
+  letter-spacing: 1px;
+}
+
+.groove__result {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 2.1rem;
+  color: #f2c879;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(242, 175, 90, .55), 0 0 2px rgba(242, 200, 121, .8);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* ---------- keys ---------- */
+
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.key {
+  border: none;
+  cursor: pointer;
+  padding: 14px 0;
+  border-radius: 9px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: .82rem;
+  letter-spacing: .5px;
+  color: #efe2c0;
+  transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
+}
+
+.key:active {
+  transform: translateY(2px) scale(.98);
+}
+
+/* carved stone numeral keys */
+.key--stone {
+  background: linear-gradient(160deg, #7a6c58, #4c4034);
+  box-shadow:
+    0 3px 0 #29221a,
+    0 5px 8px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.15);
+}
+.key--stone:hover { filter: brightness(1.1); }
+.key--stone:active {
+  box-shadow: 0 1px 0 #29221a, inset 0 2px 4px rgba(0,0,0,.5);
+}
+
+.key--zero { grid-column: span 1; font-size: .72rem; }
+
+/* bronze rune keys: AC / DEL / % */
+.key--rune {
+  background: linear-gradient(160deg, #c79a5f, #8a6339);
+  color: #2c1c0d;
+  box-shadow:
+    0 3px 0 #5b4021,
+    0 5px 8px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.35);
+}
+.key--rune:hover { filter: brightness(1.08); }
+.key--rune:active {
+  box-shadow: 0 1px 0 #5b4021, inset 0 2px 4px rgba(0,0,0,.4);
+}
+
+/* ember operator keys */
+.key--ember {
+  background: linear-gradient(160deg, #e3833a, #a84e19);
+  box-shadow:
+    0 3px 0 #6b330f,
+    0 5px 10px rgba(217, 114, 44, .35),
+    inset 0 1px 0 rgba(255,255,255,.3);
+}
+.key--ember:hover { filter: brightness(1.1); }
+.key--ember:active {
+  box-shadow: 0 1px 0 #6b330f, inset 0 2px 4px rgba(0,0,0,.4);
+}
+
+/* glowing gold equals key, spans two columns */
+.key--gold {
+  grid-column: span 2;
+  background: linear-gradient(160deg, #f3d488, #b5834b);
+  color: #2c1c0d;
+  font-size: 1.1rem;
+  box-shadow:
+    0 3px 0 #6b4c22,
+    0 0 18px rgba(243, 212, 136, .5),
+    inset 0 1px 0 rgba(255,255,255,.5);
+}
+.key--gold:hover { filter: brightness(1.08); }
+.key--gold:active {
+  box-shadow: 0 1px 0 #6b4c22, inset 0 2px 4px rgba(0,0,0,.35);
+}
+
+/* ---------- footer ---------- */
+
+.tablet__footer {
+  margin: 16px 0 0;
+  text-align: center;
+  font-style: italic;
+  font-size: .68rem;
+  letter-spacing: .5px;
+  color: #9c8b68;
+  opacity: .75;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 420px) {
+  .tablet { padding: 22px 16px 16px; }
+  .tablet__header h1 { font-size: 1.5rem; letter-spacing: 2px; }
+  .groove__result { font-size: 1.7rem; }
+  .key { padding: 12px 0; font-size: .74rem; }
+}
+
+/* respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .flame { animation: none; }
+}
